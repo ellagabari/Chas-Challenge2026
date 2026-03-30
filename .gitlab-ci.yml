@@ -1,0 +1,7 @@
+stages:
+  - test 
+
+test pipeline:
+  stage: test 
+  script:
+    - echo "Hello world"
