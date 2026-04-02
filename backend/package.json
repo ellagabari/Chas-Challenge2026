@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "node --loader ts-node/esm --experimental-specifier-resolution=node src/index.ts",
-    "start": "node --loader ts-node/esm --experimental-specifier-resolution=node src/index.ts",
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
     "check": "tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -30,6 +31,7 @@
     "@types/pg": "^8.20.0",
     "drizzle-kit": "^0.31.10",
     "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
     "typescript": "^6.0.2"
   },
   "overrides": {
