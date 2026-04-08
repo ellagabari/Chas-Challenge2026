@@ -6,7 +6,6 @@ from deploy import req_env
 
 def main():
     #unpacking Gitlab CI varibles
-    ci_project_namespace_slug = req_env("CI_PROJECT_NAMESPACE_SLUG")
     ci_project_name= req_env("CI_PROJECT_NAME")
     ci_commit_ref_slug = req_env("CI_COMMIT_REF_SLUG")
     usr = req_env("PORTAINER_USR")
@@ -23,7 +22,7 @@ def main():
         auth_post.raise_for_status()
         portainer_token = auth_post.json()["jwt"]
         header = {"Authorization": f"Bearer {portainer_token}"}
-        stack_name = (f"{ci_project_namespace_slug}-{ci_project_name}-{ci_commit_ref_slug}")
+        stack_name = (f"{ci_project_name}-{ci_commit_ref_slug}")
         
 
         get_endpoint_id = requests.get(f"{portainer_url}/endpoints", headers=header)
