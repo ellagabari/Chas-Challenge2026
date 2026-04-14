@@ -4,6 +4,7 @@ import { NotFoundPage } from './pages/NotFoundPage'
 import { NavBar } from './components/NavBar'
 import { ReportsPage } from './pages/Reports'
 import UserProfile from './pages/UserProfile'
+import { LoginPage } from './pages/LoginPage'
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/home" element={<Navigate to="/" replace />} />
         <Route path="/reports" element={<ReportsPage />} />
         <Route path="/profile" element={<UserProfile />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>
