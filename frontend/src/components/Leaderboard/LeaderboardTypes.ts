@@ -1,6 +1,7 @@
 //structuren för varje "entry" i leaderboarden
 export type LeaderboardEntry = {
   id: number;
+  profilePictureUrl: string | null;
   username: string;
   email: string;
   points: number;

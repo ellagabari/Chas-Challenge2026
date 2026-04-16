@@ -16,9 +16,9 @@ export function Leaderboard() {
   // hantera loading state
   if (isLoading) {
     return (
-      <div className="leaderboard-container">
-        <h2>Leaderboard</h2>
-        <div className="loading-message">Loading leaderboard data... ⏳</div>
+      <div className="leaderboard-container text-slate-100 p-6">
+        <h2>🏆 Leaderboard</h2>
+        <div className="loading-message text-emerald-400">Loading leaderboard data... ⏳</div>
       </div>
     );
   }
@@ -26,9 +26,9 @@ export function Leaderboard() {
   // hantera error state
   if (isError) {
     return (
-      <div className="leaderboard-container">
-        <h2>Leaderboard</h2>
-        <div className="error-message">
+      <div className="leaderboard-container p-6">
+        <h2 className="text-slate-100">🏆 Leaderboard</h2>
+        <div className="error-message text-red-400">
           Error loading leaderboard: {(error as Error).message} ❌
         </div>
       </div>
@@ -36,7 +36,7 @@ export function Leaderboard() {
   }
 
   return (
-    <div className="leaderboard-container">
+    <div className="leaderboard-container text-slate-100 p-6">
       <h2>🏆 Leaderboard</h2>
       
       {/* tids filter knappar */}
@@ -46,11 +46,11 @@ export function Leaderboard() {
       {data && data.entries.length > 0 ? (
         <LeaderboardTable entries={data.entries} sortBy={sortBy} onSortChange={setSortBy} />
       ) : (
-        <div className="empty-message">No leaderboard data available</div>
+        <div className="empty-message text-emerald-400">No leaderboard data available</div>
       )}
 
       {/* Footer med information om senaste uppdatering */}
-      <p className="last-updated">Last updated: {data?.lastUpdated}</p>
+      <p className="last-updated text-emerald-400 text-sm mt-4">Last updated: {data?.lastUpdated}</p>
     </div>
   );
 }

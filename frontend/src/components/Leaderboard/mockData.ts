@@ -5,6 +5,7 @@ const allTimeData: LeaderboardEntry[] = [
   {
     id: 1,
     username: 'alex123',
+    profilePictureUrl: 'https://example.com/alex.jpg',
     email: 'alex@example.com',
     points: 450,
     rank: 1,
@@ -15,6 +16,7 @@ const allTimeData: LeaderboardEntry[] = [
   {
     id: 2,
     username: 'jordan123',
+    profilePictureUrl: 'https://example.com/jordan.jpg',
     email: 'jordan@example.com',
     points: 380,
     rank: 2,
@@ -25,7 +27,7 @@ const allTimeData: LeaderboardEntry[] = [
   {
     id: 3,
     username: 'sam123',
-
+    profilePictureUrl: 'https://example.com/sam.jpg',
     email: 'sam@example.com',
     points: 320,
     rank: 3,
@@ -36,6 +38,7 @@ const allTimeData: LeaderboardEntry[] = [
   {
     id: 4,
     username: 'casey123',
+    profilePictureUrl: 'https://example.com/casey.jpg',
     email: 'casey@example.com',
     points: 280,
     rank: 4,
@@ -46,6 +49,7 @@ const allTimeData: LeaderboardEntry[] = [
   {
     id: 5,
     username: 'morgan123',
+    profilePictureUrl: 'https://example.com/morgan.jpg',
     email: 'morgan@example.com',
     points: 210,
     rank: 5,
@@ -60,6 +64,7 @@ const monthlyData: LeaderboardEntry[] = [
   {
     id: 2,
     username: 'jordan123',
+    profilePictureUrl: 'https://example.com/jordan.jpg',
     email: 'jordan@example.com',
     points: 120,
     rank: 1,
@@ -70,6 +75,7 @@ const monthlyData: LeaderboardEntry[] = [
   {
     id: 1,
     username: 'alex123',
+    profilePictureUrl: 'https://example.com/alex.jpg',
     email: 'alex@example.com',
     points: 85,
     rank: 2,
@@ -80,6 +86,7 @@ const monthlyData: LeaderboardEntry[] = [
   {
     id: 5,
     username: 'morgan123',
+    profilePictureUrl: 'https://example.com/morgan.jpg',
     email: 'morgan@example.com',
     points: 70,
     rank: 3,
@@ -94,6 +101,7 @@ const weeklyData: LeaderboardEntry[] = [
   {
     id: 3,
     username: 'sam123',
+    profilePictureUrl: 'https://example.com/sam.jpg',
     email: 'sam@example.com',
     points: 45,
     rank: 1,
@@ -104,6 +112,7 @@ const weeklyData: LeaderboardEntry[] = [
   {
     id: 4,
     username: 'casey123',
+    profilePictureUrl: 'https://example.com/casey.jpg',
     email: 'casey@example.com',
     points: 35,
     rank: 2,

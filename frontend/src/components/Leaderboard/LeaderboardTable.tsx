@@ -1,12 +1,12 @@
 import { type LeaderboardEntry } from './LeaderboardTypes';
-
+import ProfilePicture from './leaderboardAvatar';
 interface LeaderboardTableProps {
   entries: LeaderboardEntry[];
   sortBy: 'rank' | 'points' | 'username';
   onSortChange: (sortBy: 'rank' | 'points' | 'username') => void;
 }
 
-export function LeaderboardTable({ entries, sortBy, onSortChange }: LeaderboardTableProps) {
+export function LeaderboardTable({ entries, sortBy }: LeaderboardTableProps) {
   // Sortera entries baserat på sortBy prop
   const sortedEntries = [...entries].sort((a, b) => {
     switch (sortBy) {
@@ -22,51 +22,33 @@ export function LeaderboardTable({ entries, sortBy, onSortChange }: LeaderboardT
   });
 
   return (
-    <div className="leaderboard-table-container">
-      <table className="leaderboard-table">
-        <thead>
-          <tr>
-            <th
-              onClick={() => onSortChange('rank')}
-              className={`sortable-header ${sortBy === 'rank' ? 'active' : ''}`}
-            >
-              Rank
-            </th>
-            <th
-              onClick={() => onSortChange('username')}
-              className={`sortable-header ${sortBy === 'username' ? 'active' : ''}`}
-            >
-              User
-            </th>
-            <th
-              onClick={() => onSortChange('points')}
-              className={`sortable-header ${sortBy === 'points' ? 'active' : ''}`}
-            >
-              Points
-            </th>
-            <th>Reports Submitted</th>
-            <th>Reports Resolved</th>
-          </tr>
-        </thead>
-        <tbody>
-          {sortedEntries.map((entry) => (
-            <tr key={entry.id}>
-              <td className="rank-cell">
-                {entry.rank === 1 && '🥇'}
-                {entry.rank === 2 && '🥈'}
-                {entry.rank === 3 && '🥉'}
-                {entry.rank > 3 && <span className="rank-number">#{entry.rank}</span>}
-              </td>
-              <td className="username-cell">{entry.username}</td>
-              <td className="points-cell">
-                <strong>{entry.points}</strong>
-              </td>
-              <td className="count-cell">{entry.reportsSubmitted}</td>
-              <td className="count-cell">{entry.reportsResolved}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="leaderboard-table-container space-y-3">
+      {sortedEntries.map((entry) => (
+        <div
+          key={entry.id}
+          className="bg-slate-800 rounded-lg p-4 hover:bg-slate-700 transition border border-slate-700"
+        >
+          <div className="flex items-center justify-between gap-4">
+            <div className="font-bold text-lg w-12">
+              {entry.rank === 1 && '🥇'}
+              {entry.rank === 2 && '🥈'}
+              {entry.rank === 3 && '🥉'}
+              {entry.rank > 3 && <span className="text-emerald-300">#{entry.rank}</span>}
+            </div>
+            <div>
+            <ProfilePicture username= {entry.username} profilePictureUrl={entry.profilePictureUrl}/>
+            </div>
+            <div className="flex-1 text-slate-100">{entry.username}</div>
+            <div className="text-yellow-400 font-bold">{entry.points} pts</div>
+            <div className="text-emerald-400 text-sm w-20">
+              📝 {entry.reportsSubmitted}
+            </div>
+            <div className="text-green-400 text-sm w-20">
+              ✓ {entry.reportsResolved}
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
