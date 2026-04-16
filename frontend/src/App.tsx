@@ -1,21 +1,25 @@
-
 import './App.css'
-import { ReportList } from './components/ReportList';
 import LeaderboardPage from './pages/LeaderboardPage';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom'
+import { HomePage } from './pages/HomePage'
+import { NotFoundPage } from './pages/NotFoundPage'
+import { NavBar } from './components/NavBar'
+import { ReportsPage } from './pages/Reports'
+import UserProfile from './pages/UserProfile'
+
 function App() {
   return (
-    <div className="min-h-screen bg-slate-900">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/leaderboard" element={<LeaderboardPage />} />
-        </Routes>
-      </BrowserRouter>
-
-      <section style={{ maxWidth: '800px', margin: '0 auto' }}>
-        <ReportList />
-      </section>
-    </div>
+    <>
+      <NavBar />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/home" element={<Navigate to="/" replace />} />
+        <Route path="/reports" element={<ReportsPage />} />
+        <Route path="/profile" element={<UserProfile />} />
+        <Route path="/leaderboard" element={<LeaderboardPage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </>
   )
 }
 
