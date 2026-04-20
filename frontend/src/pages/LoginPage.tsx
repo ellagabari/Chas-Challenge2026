@@ -159,7 +159,7 @@ export function LoginPage() {
             </>
           ) : (
             <button
-              onClick={() => form.reset()}
+              onClick={() => form.reset({ isRegistering: false, showPassword: false, name: '', email: '', password: '' })}
               className="login-page__toggle-link"
             >
               Already have an account? Login
