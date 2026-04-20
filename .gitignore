@@ -1,3 +1,6 @@
+#python
+__pycache__
+
 # Node.gitignore
 
 # Logs
@@ -145,3 +148,9 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
 
+# Custom team additions
+.DS_Store
+Thumbs.db
+Desktop.ini
+backend/dist/
+frontend/dist/

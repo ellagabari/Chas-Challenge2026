@@ -1,11 +1,13 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   server: {
-    // Expose dev server on LAN so your phone can open it (mobil test)
+    // LAN access so phone can open the dev server (mobil test)
     host: true,
+    allowedHosts: true,
   },
-})
+});
