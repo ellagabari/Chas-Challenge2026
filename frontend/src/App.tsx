@@ -1,3 +1,5 @@
+import './App.css'
+import LeaderboardPage from './pages/LeaderboardPage';
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { HomePage } from './pages/HomePage'
 import { NotFoundPage } from './pages/NotFoundPage'
@@ -14,6 +16,7 @@ function App() {
         <Route path="/home" element={<Navigate to="/" replace />} />
         <Route path="/reports" element={<ReportsPage />} />
         <Route path="/profile" element={<UserProfile />} />
+        <Route path="/leaderboard" element={<LeaderboardPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>
