@@ -17,11 +17,8 @@ function App() {
         <Route path="/home" element={<Navigate to="/" replace />} />
         <Route path="/reports" element={<ReportsPage />} />
         <Route path="/profile" element={<UserProfile />} />
-<<<<<<< HEAD
         <Route path="/login" element={<LoginPage />} />
-=======
         <Route path="/leaderboard" element={<LeaderboardPage />} />
->>>>>>> df3dad959fa194ddc2d23ccd23069fadab7e4c75
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>
