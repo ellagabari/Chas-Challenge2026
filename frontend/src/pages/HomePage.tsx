@@ -1,4 +1,4 @@
-
+import ReportMap from '../components/Map/ReportMap';
 
 export function HomePage() {
 	return (
@@ -12,9 +12,7 @@ export function HomePage() {
 
             {/* MAP SECTION */}
             <section className="mx-auto mb-10 max-w-4xl px-6">
-                <div className="flex h-64 w-full items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 bg-slate-200">
-                    <p className="font-medium text-slate-500">🗺️ Map View Loading</p>
-                </div>
+                <ReportMap />
             </section>
         </main>
     )

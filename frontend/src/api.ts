@@ -19,3 +19,18 @@ export const fetchLeaderboard = async (_timePeriod: 'allTime' | 'monthly' | 'wee
 
   throw new Error('Backend endpoint not yet implemented');
 };
+export const createReport = async (newReport: any) => {
+  const response = await fetch(`${API_BASE_URL}/api/reports`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(newReport),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Failed to create report');
+  }
+  return response.json();
+};
