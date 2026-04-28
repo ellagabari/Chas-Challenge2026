@@ -5,7 +5,8 @@ import express from 'express';
 import type { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './config/swagger.js';
 
 // Load environment variables from .env
 dotenv.config();
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/reports', reportRoutes);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Basic Route
 app.get('/', (req: Request, res: Response) => {
@@ -31,7 +33,7 @@ app.get('/', (req: Request, res: Response) => {
 app.get('/config-test', (req: Request, res: Response) => {
   res.json({
     port: PORT,
-    db_connected: !!process.env.DATABASE_URL
+    db_connected: !!process.env.DATABASE_URL,
   });
 });
 
