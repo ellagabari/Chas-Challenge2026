@@ -1,6 +1,9 @@
+import { useState } from 'react';
 import ReportMap from '../components/Map/ReportMap';
 
 export function HomePage() {
+	const [position, setPosition] = useState<[number, number]>([59.3293, 18.0686]);
+
 	return (
 		<main className="min-h-screen bg-slate-50 px-6 py-10 text-slate-900">
 
@@ -12,7 +15,7 @@ export function HomePage() {
 
             {/* MAP SECTION */}
             <section className="mx-auto mb-10 max-w-4xl px-6">
-                <ReportMap />
+                <ReportMap position={position} setPosition={setPosition} />
             </section>
         </main>
     )

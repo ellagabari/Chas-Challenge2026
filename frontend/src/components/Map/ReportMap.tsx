@@ -1,5 +1,4 @@
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
-import { useState } from 'react';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import MarkerPopup from './MarkerPopup';
@@ -14,8 +13,15 @@ let DefaultIcon = L.icon({
 });
 L.Marker.prototype.options.icon = DefaultIcon;
 
-export default function ReportMap({ reports }: { reports?: any[] }) {
-  const [position, setPosition] = useState<[number, number]>([59.3293, 18.0686]);
+export default function ReportMap({
+  reports,
+  position,
+  setPosition,
+}: {
+  reports?: any[];
+  position: [number, number];
+  setPosition: (pos: [number, number]) => void;
+}) {
 
   function LocationMarker() {
     useMapEvents({
@@ -33,7 +39,7 @@ export default function ReportMap({ reports }: { reports?: any[] }) {
   }
 
   return (
-    <div className="h-125 w-full rounded-xl overflow-hidden shadow-inner">
+    <div className="h-96 w-full rounded-xl overflow-hidden shadow-inner">
       <MapContainer 
         center={position} 
         zoom={13} 

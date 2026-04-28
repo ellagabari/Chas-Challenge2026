@@ -1,25 +1,24 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createReport } from '../../api';
+import { createReport, type CreateReportPayload } from '../../api';
 
-export default function ReportForm() {
+export default function ReportForm({ lat, lng }: { lat: number; lng: number }) {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: createReport, // Use the function from your api.ts
+    mutationFn: createReport,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['reports'] });
       alert("Reported successfully!");
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       alert(`Error: ${error.message}`);
     }
   });
 
   const handleSubmit = () => {
-    const payload = {
-      userId: 1, // Note: Later we will get this from your Auth context!
-      lat: 59.3293,
-      lng: 18.0686,
+    const payload: CreateReportPayload = {
+      userId: 1,
+      location: `${lat},${lng}`,
       description: "Sample trash report",
       size: "medium"
     };

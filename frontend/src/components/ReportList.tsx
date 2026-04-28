@@ -1,13 +1,5 @@
-
 import { useQuery } from '@tanstack/react-query'
-import { fetchReports } from '../api'
-
-type Report = {
-  id: number;
-  location: string;
-  description: string | null;
-  size: string | null;
-};
+import { fetchReports, type Report } from '../api'
 
 export function ReportList() {
   const { data, isLoading, isError, error } = useQuery<Report[]>({
