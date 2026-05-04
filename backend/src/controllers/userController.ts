@@ -82,3 +82,28 @@ export const getUser = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+//getMe endpoint to get the currently logged in user based on the userId stored in the session
+export const getMe = async (req: Request, res: Response) => {
+  try {
+    const idValue = req.query.id;
+    const id = typeof idValue === 'string' ? Number(idValue) : undefined;
+
+    if (!id) {
+      return res.status(400).json({ error: 'Provide id' });
+    }
+
+    const [user] = await db.select().from(users).where(eq(users.id, id)).limit(1);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const { password: _, ...userWithoutPassword } = user;
+    res.json(userWithoutPassword);
+
+  } catch (error) {
+    console.error('Error fetching me:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
