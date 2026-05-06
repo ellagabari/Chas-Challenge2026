@@ -7,63 +7,6 @@ const router = Router();
 
 /**
  * @swagger
- * /api/users/register:
- *   post:
- *     summary: Register a new user
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required: [email, password]
- *             properties:
- *               email:
- *                 type: string
- *                 format: email
- *               password:
- *                 type: string
- *               role:
- *                 type: string
- *                 enum: [user, admin]
- *     responses:
- *       201:
- *         description: User registered successfully
- *       500:
- *         description: Internal server error
- */
-router.post('/register', registerUser);
-
-/**
- * @swagger
- * /api/users/login:
- *   post:
- *     summary: Login a user
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required: [email, password]
- *             properties:
- *               email:
- *                 type: string
- *                 format: email
- *               password:
- *                 type: string
- *     responses:
- *       200:
- *         description: Login successful
- *       401:
- *         description: Invalid email or password
- *       500:
- *         description: Internal server error
- */
-router.post('/login', loginUser);
-
-/**
- * @swagger
  * /api/users:
  *   get:
  *     summary: Get a user by id or email
