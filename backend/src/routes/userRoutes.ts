@@ -1,7 +1,7 @@
 // The Route file just maps the URL to the function in the controller.
 
 import { Router } from 'express';
-import { registerUser, loginUser, getUser, getMe } from '../controllers/userController.js';
+import { getUser, getMe } from '../controllers/userController.js';
 
 const router = Router();
 
