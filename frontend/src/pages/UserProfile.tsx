@@ -12,8 +12,6 @@ const API_BASE_URL = import.meta.env.VITE_API_URL
 const UserProfile = () => {
   const navigate = useNavigate()
 
-  console.log('API URL:', import.meta.env.VITE_API_URL)
-
   const { data: user, isLoading, isError } = useQuery({
     queryKey: ['user-me'],
     queryFn: async () => {
