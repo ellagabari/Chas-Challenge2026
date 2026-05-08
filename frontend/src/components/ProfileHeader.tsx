@@ -3,22 +3,27 @@
 interface ProfileHeaderProps {
   username: string | null // Användarens namn, kan vara null
   level: number
-  avatarUrl?: string
 }
 
-const ProfileHeader = ({ username, level, avatarUrl }: ProfileHeaderProps) => {
+const getInitial = (username: string) => username.charAt(0).toUpperCase()
+
+const getAvatarColor = (username: string) => {
+  const colors = ['bg-red-500', 'bg-green-500', 'bg-blue-500', 'bg-yellow-500', 'bg-purple-500', 'bg-pink-500']
+  const hash = username.charCodeAt(0)
+  return colors[hash % colors.length]
+}
+
+const ProfileHeader = ({ username, level }: ProfileHeaderProps) => {
+  const displayName = username ?? 'User'
+  const initial = getInitial(displayName)
+  const avatarColor = getAvatarColor(displayName)
+
   return (
     <div className="flex items-center gap-4 p-4">
 
       {/* Avatar */}
-      <div className="w-16 h-16 rounded-full bg-surface flex items-center justify-center overflow-hidden">
-        {avatarUrl ? (
-          <img src={avatarUrl} alt="avatar" className="w-full h-full object-cover" />
-        ) : (
-          <svg viewBox="0 0 24 24" className="w-8 h-8 text-muted" fill="currentColor">
-            <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
-          </svg>
-        )}
+      <div className={`w-16 h-16 rounded-full ${avatarColor} flex items-center justify-center overflow-hidden text-white text-2xl font-bold`}>
+        {initial}
       </div>
 
       {/* Namn och level */}
