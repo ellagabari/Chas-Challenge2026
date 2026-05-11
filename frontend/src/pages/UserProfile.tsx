@@ -47,12 +47,15 @@ const UserProfile = () => {
   return (
     <div className="bg-background min-h-screen pb-24">
       <ProfileHeader username={user?.username} level={12} />
-      <PointsCard totalPoints={user?.points ?? 0} weeklyPoints={180} />
-      <BadgeList badges={[ //Example badges(hardcoded), we will replace this with real data later
-        { id: 1, label: "🔥3 day streak" },
-        { id: 2, label: "Another award" },
-        { id: 3, label: "Another award" }
+      <PointsCard totalPoints={user?.points ?? 0} weeklyPoints={user?.weeklyPoints ?? 0} />
+      <BadgeList badges={[
+        { id: 0, label: "🔥3 day streak"}, //TODO: implement streak logic
+        ...(user?.badges?.map((label: string, index: number) => ({
+          id: index + 1, 
+          label
+        })) ?? [])
       ]} />
+      
       <SettingsButton onClick={() => console.log('Settings clicked')} />
 
       <button
