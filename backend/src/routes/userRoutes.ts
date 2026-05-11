@@ -1,8 +1,9 @@
 // The Route file just maps the URL to the function in the controller.
 
 import { Router } from 'express';
-import { getUser } from '../controllers/userController.js';
-import { getLeaderboard } from '../controllers/userController.js';
+import { getUser, getMe, getLeaderboard } from '../controllers/userController.js';
+import { authMiddleware } from '../middleware/authMiddleware.js';
+
 
 const router = Router();
 
@@ -57,6 +58,41 @@ const router = Router();
  *               $ref: '#/components/schemas/ErrorMessage'
  */
 router.get('/', getUser);
+
+
+/**
+ * @swagger
+ * /api/users/me:
+ *   get:
+ *     summary: Get the currently authenticated user's profile
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User profile returned successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 username:
+ *                   type: string
+ *                 email:
+ *                   type: string
+ *                 points:
+ *                   type: integer
+ *                 badges:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *       401:
+ *         description: Unauthorized - no or invalid token
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Internal server error
+ */
+router.get('/me', authMiddleware, getMe);
 
 /**
  * @swagger
