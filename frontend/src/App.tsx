@@ -7,6 +7,7 @@ import { ReportsPage } from './pages/Reports'
 import UserProfile from './pages/UserProfile'
 import { LoginPage } from './pages/LoginPage'
 import { AddPicturePage } from './pages/AddPicturePage'
+import PrivateRoute from './components/PrivateRoute'
 
 function App() {
   return (
@@ -17,7 +18,9 @@ function App() {
         <Route path="/home" element={<Navigate to="/" replace />} />
         <Route path="/reports" element={<ReportsPage />} />
         <Route path="/add-picture" element={<AddPicturePage />} />
-        <Route path="/profile" element={<UserProfile />} />
+        <Route element={<PrivateRoute />}>
+          <Route path="/profile" element={<UserProfile />} />
+        </Route>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/leaderboard" element={<LeaderboardPage />} />
         <Route path="*" element={<NotFoundPage />} />
