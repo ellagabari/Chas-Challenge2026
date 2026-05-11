@@ -112,6 +112,9 @@ export const getUserById = async (req: Request, res: Response) => {
   }
 };
 
+
+
+
 export const getLeaderboard = async (req: Request, res: Response) => {
   try {
     const rawLimit = typeof req.query.limit === 'string' ? Number(req.query.limit) : 10;
