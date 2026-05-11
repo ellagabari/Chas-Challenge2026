@@ -13,13 +13,18 @@ const UserProfile = () => {
   const navigate = useNavigate()
 
   const { data: user, isLoading, isError } = useQuery({
-    queryKey: ['user-me'],
-    queryFn: async () => {
-      const response = await fetch(`${API_BASE_URL}/api/users/me?id=1`)
-      if (!response.ok) throw new Error('Failed to fetch user')
-      return response.json()
-    }
-  })
+  queryKey: ['user-me'],
+  queryFn: async () => {
+    const token = localStorage.getItem('token') // Get token
+    const response = await fetch(`${API_BASE_URL}/api/users/me`, {
+      headers: {
+        Authorization: `Bearer ${token}` // Send with token in auth header
+      }
+    })
+    if (!response.ok) throw new Error('Failed to fetch user')
+    return response.json()
+  }
+})
 
   function handleLogout() {
     localStorage.removeItem('token')
@@ -27,8 +32,11 @@ const UserProfile = () => {
     navigate('/login')
   }
 
-  if (isLoading) return <div className="bg-background min-h-screen p-4 text-white">Laddar...</div>
-  if (isError) return <div className="bg-background min-h-screen p-4 text-danger">Något gick fel.</div>
+  if (isLoading) return <div className="bg-background min-h-screen p-4 text-white">loading...</div>
+  if (isError) {
+    navigate('/login')
+    return null
+  }
 
   return (
     <div className="bg-background min-h-screen pb-24">

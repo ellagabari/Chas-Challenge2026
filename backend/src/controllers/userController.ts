@@ -2,6 +2,7 @@ import type { Request, Response } from 'express';
 import { db } from '../db/index.js';
 import { users } from '../db/schema.js';
 import { eq } from 'drizzle-orm';
+import type { AuthRequest } from '../middleware/authMiddleware.js';
 
 export const getUser = async (req: Request, res: Response) => {
   try {
@@ -33,16 +34,15 @@ export const getUser = async (req: Request, res: Response) => {
 };
 
 //getMe endpoint to get the currently logged in user based on the userId stored in the session
-export const getMe = async (req: Request, res: Response) => {
+export const getMe = async (req: AuthRequest, res: Response) => { // Now from AuthRequest instead of Request
   try {
-    const idValue = req.query.id;
-    const id = typeof idValue === 'string' ? Number(idValue) : undefined;
+    const userId = req.userId; // Now from token via authMiddleware
 
-    if (!id) {
-      return res.status(400).json({ error: 'Provide id' });
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const [user] = await db.select().from(users).where(eq(users.id, id)).limit(1);
+    const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
