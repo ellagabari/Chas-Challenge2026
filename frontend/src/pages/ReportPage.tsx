@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import ReportForm from '../components/Map/ReportForm';
+import { useNavigate } from 'react-router-dom';
 import ReportMap from '../components/Map/ReportMap';
 import { ReportList } from '../components/ReportList';
 
 export const ReportsPage = () => {
   const [position, setPosition] = useState<[number, number]>([59.3293, 18.0686]);
+  const navigate = useNavigate();
 
   return (
     <div className="container mx-auto p-4">
@@ -14,12 +15,16 @@ export const ReportsPage = () => {
         <ReportMap position={position} setPosition={setPosition} />
       </section>
 
-      <section className="bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-xl font-semibold mb-4">Submit Report</h2>
-        <ReportForm lat={position[0]} lng={position[1]} />
+      <section className="mb-8">
+        <button
+          onClick={() => navigate('/add-picture')}
+          className="w-full py-3 px-4 rounded-md font-bold text-white bg-green-600 hover:bg-green-700 transition-colors"
+        >
+          + Add New Report
+        </button>
       </section>
 
-      <section className="mt-10 bg-white rounded-lg shadow-md">
+      <section className="mt-4 bg-white rounded-lg shadow-md">
         <ReportList />
       </section>
     </div>
