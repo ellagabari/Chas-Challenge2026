@@ -1,44 +1,169 @@
 // The Route file just maps the URL to the function in the controller.
 
 import { Router } from 'express';
-import { getUser } from '../controllers/userController.js';
-import { getLeaderboard } from '../controllers/userController.js';
+import { authenticate } from '../middleware/authenticate.js';
+import { requireRole } from '../middleware/requireRole.js';
+import {
+  getLeaderboard,
+  getMe,
+  getUserById,
+  listUsers,
+} from '../controllers/userController.js';
 
 const router = Router();
+
+router.use(authenticate);
+
+/**
+ * @swagger
+ * /api/users/leaderboard:
+ *   get:
+ *     tags: [Users]
+ *     summary: Get the leaderboard
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           enum: [10, 20]
+ *         required: false
+ *         description: Number of users to return (defaults to 10)
+ *     responses:
+ *       200:
+ *         description: Leaderboard found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/UserPublic'
+ *       401:
+ *         description: Missing or invalid JWT
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorMessage'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorMessage'
+ */
+router.get('/leaderboard', getLeaderboard);
+
+/**
+ * @swagger
+ * /api/users/me:
+ *   get:
+ *     tags: [Users]
+ *     summary: Get the authenticated user's profile
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Current user (password never included)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserPublic'
+ *       401:
+ *         description: Missing or invalid JWT
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorMessage'
+ */
+router.get('/me', getMe);
 
 /**
  * @swagger
  * /api/users:
  *   get:
  *     tags: [Users]
- *     summary: Get a user by id, userId, or email
- *     description: Returns the user without the password hash. Provide exactly one lookup — `id`, `userId`, or `email`.
+ *     summary: List all users (paginated, admin only)
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: query
- *         name: id
+ *         name: page
  *         schema:
  *           type: integer
- *         description: User ID (same as userId)
+ *           minimum: 1
+ *         description: Page number (default 1)
  *       - in: query
- *         name: userId
+ *         name: limit
  *         schema:
  *           type: integer
- *         description: Alternative query name for user ID
- *       - in: query
- *         name: email
- *         schema:
- *           type: string
- *           format: email
- *         description: User email
+ *           minimum: 1
+ *           maximum: 100
+ *         description: Page size (default 20, max 100)
  *     responses:
  *       200:
- *         description: User found
+ *         description: Paginated user list
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UsersPaginatedResponse'
+ *       401:
+ *         description: Missing or invalid JWT
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorMessage'
+ *       403:
+ *         description: Not an admin
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorMessage'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorMessage'
+ */
+router.get('/', requireRole('admin'), listUsers);
+
+/**
+ * @swagger
+ * /api/users/{id}:
+ *   get:
+ *     tags: [Users]
+ *     summary: Get a single user by id
+ *     description: Allowed for the same user or an admin.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: User found (password never included)
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/UserPublic'
  *       400:
- *         description: Missing query — provide id, userId, or email
+ *         description: Invalid id
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorMessage'
+ *       401:
+ *         description: Missing or invalid JWT
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorMessage'
+ *       403:
+ *         description: Cannot access another user's profile
  *         content:
  *           application/json:
  *             schema:
@@ -56,28 +181,6 @@ const router = Router();
  *             schema:
  *               $ref: '#/components/schemas/ErrorMessage'
  */
-router.get('/', getUser);
-
-/**
- * @swagger
- * /api/users/leaderboard:
- *   get:
- *     summary: Get the leaderboard
- *     parameters:
- *       - in: query
- *         name: limit
- *         schema:
- *           type: integer
- *           enum: [10, 20]
- *         required: false
- *         description: Number of users to return (defaults to 10)
- *     responses:
- *       200:
- *         description: Leaderboard found
- *       500:
- *         description: Internal server error
- */
-router.get('/leaderboard', getLeaderboard);
-
+router.get('/:id', getUserById);
 
 export default router;
