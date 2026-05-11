@@ -2,6 +2,7 @@
 
 import { Router } from 'express';
 import { getUser } from '../controllers/userController.js';
+import { getLeaderboard } from '../controllers/userController.js';
 
 const router = Router();
 
@@ -32,5 +33,27 @@ const router = Router();
  *         description: Internal server error
  */
 router.get('/', getUser);
+
+/**
+ * @swagger
+ * /api/users/leaderboard:
+ *   get:
+ *     summary: Get the leaderboard
+ *     parameters:
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           enum: [10, 20]
+ *         required: false
+ *         description: Number of users to return (defaults to 10)
+ *     responses:
+ *       200:
+ *         description: Leaderboard found
+ *       500:
+ *         description: Internal server error
+ */
+router.get('/leaderboard', getLeaderboard);
+
 
 export default router;
