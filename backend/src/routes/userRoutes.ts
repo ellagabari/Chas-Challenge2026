@@ -1,8 +1,9 @@
 // The Route file just maps the URL to the function in the controller.
 
 import { Router } from 'express';
-import { getUser, getMe } from '../controllers/userController.js';
+import { getUser, getMe, getLeaderboard } from '../controllers/userController.js';
 import { authMiddleware } from '../middleware/authMiddleware.js';
+
 
 const router = Router();
 
@@ -68,5 +69,27 @@ router.get('/', getUser);
  *         description: Internal server error
  */
 router.get('/me', authMiddleware, getMe);
+
+/**
+ * @swagger
+ * /api/users/leaderboard:
+ *   get:
+ *     summary: Get the leaderboard
+ *     parameters:
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           enum: [10, 20]
+ *         required: false
+ *         description: Number of users to return (defaults to 10)
+ *     responses:
+ *       200:
+ *         description: Leaderboard found
+ *       500:
+ *         description: Internal server error
+ */
+router.get('/leaderboard', getLeaderboard);
+
 
 export default router;

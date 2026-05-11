@@ -1,8 +1,9 @@
 import type { Request, Response } from 'express';
 import { db } from '../db/index.js';
 import { users } from '../db/schema.js';
-import { eq } from 'drizzle-orm';
+import { eq, desc } from 'drizzle-orm';
 import type { AuthRequest } from '../middleware/authMiddleware.js';
+
 
 export const getUser = async (req: Request, res: Response) => {
   try {
@@ -33,6 +34,7 @@ export const getUser = async (req: Request, res: Response) => {
   }
 };
 
+
 //getMe endpoint to get the currently logged in user based on the userId stored in the session
 export const getMe = async (req: AuthRequest, res: Response) => { // Now from AuthRequest instead of Request
   try {
@@ -57,3 +59,25 @@ export const getMe = async (req: AuthRequest, res: Response) => { // Now from Au
   }
 };
 
+
+
+export const getLeaderboard = async (req: Request, res: Response) => {
+  try {
+    const rawLimit = typeof req.query.limit === 'string' ? Number(req.query.limit) : 10;
+    const limit = rawLimit === 20 ? 20 : 10;
+
+    const leaderboard = await db.select().from(users).orderBy(desc(users.points)).limit(limit);
+    const leaderboardwithoutPassword = leaderboard.map(user => {
+    const { password: _, ...userWithoutPassword } = user;
+    return userWithoutPassword;
+   });
+    res.json(leaderboardwithoutPassword);
+  }
+  catch (error){
+     console.error('Error fetching leaderboard')
+     res.status(500).json({ error: 'Internal server error '})
+  }
+
+  
+    
+}
