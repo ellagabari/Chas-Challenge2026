@@ -2,6 +2,7 @@
 
 import { Router } from 'express';
 import { getUser, getMe } from '../controllers/userController.js';
+import { authMiddleware } from '../middleware/authMiddleware.js';
 
 const router = Router();
 
@@ -39,13 +40,8 @@ router.get('/', getUser);
  * /api/users/me:
  *   get:
  *     summary: Get the currently authenticated user's profile
- *     parameters:
- *       - in: query
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: User ID (temporary until JWT middleware is implemented)
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: User profile returned successfully
@@ -54,24 +50,23 @@ router.get('/', getUser);
  *             schema:
  *               type: object
  *               properties:
- *                 id:
- *                   type: integer
- *                 email:
+ *                 username:
  *                   type: string
- *                 role:
+ *                 email:
  *                   type: string
  *                 points:
  *                   type: integer
- *                 createdAt:
- *                   type: string
- *                   format: date-time
- *       400:
- *         description: No id provided
+ *                 badges:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *       401:
+ *         description: Unauthorized - no or invalid token
  *       404:
  *         description: User not found
  *       500:
  *         description: Internal server error
  */
-router.get('/me', getMe);
+router.get('/me', authMiddleware, getMe);
 
 export default router;
