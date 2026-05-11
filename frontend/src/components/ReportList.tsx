@@ -26,7 +26,7 @@ export function ReportList() {
   }
 
   return (
-    <div className="p-6 sm:p-8">
+    <div className="p-1">
       <div className="flex items-center justify-between gap-4">
         <span className="rounded-full bg-emerald-300 px-3 py-1 text-sm text-white">
           {data?.length ?? 0} reports

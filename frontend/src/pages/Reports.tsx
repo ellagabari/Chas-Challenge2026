@@ -9,8 +9,8 @@ export function ReportsPage() {
     <div className="min-h-screen pb-36" style={{ backgroundColor: '#EEFCF3' }}>
       <div className="w-full max-w-4xl px-4 pt-6 text-left">
         <h2
-          className="font-bold text-12xl mb-5 ml-4"
-          style={{ color: '#1D8244', margin: '0 0 20px' }}
+          className="font-bold text-12xl mb-4 ml-3"
+          style={{ color: '#1D8244', margin: '0 0 20px', marginLeft: '16px' }}
         >
           All reports
         </h2>
@@ -19,7 +19,7 @@ export function ReportsPage() {
         <ReportMap position={position} setPosition={setPosition} />
       </section>
 
-          <section className="rounded-2xl">
+          <section className="rounded-2xl ml-0">
           <ReportList />
         </section>
       </div>
