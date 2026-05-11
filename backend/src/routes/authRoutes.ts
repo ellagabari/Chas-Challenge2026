@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { register, login } from '../controllers/authController.js';
+import { register, login, logout } from '../controllers/authController.js';
 
 const router = Router();
 
@@ -103,5 +103,28 @@ router.post('/register', register);
  *               $ref: '#/components/schemas/ErrorMessage'
  */
 router.post('/login', login);
+
+/**
+ * @swagger
+ * /api/auth/logout:
+ *   post:
+ *     tags: [Auth]
+ *     summary: Log out the current user
+ *     description: Stateless logout acknowledgment. The client must discard the JWT on its side. Returns a success message.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Logged out successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Logged out successfully
+ */
+router.post('/logout', logout);
 
 export default router;

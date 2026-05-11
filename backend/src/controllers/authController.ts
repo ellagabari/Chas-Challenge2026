@@ -60,6 +60,10 @@ export const register = async (req: Request, res: Response) => {
   }
 };
 
+export const logout = (_req: Request, res: Response) => {
+  return res.status(200).json({ message: 'Logged out successfully' });
+};
+
 export const login = async (req: Request, res: Response) => {
   const parsed = loginSchema.safeParse(req.body);
   if (!parsed.success) {
