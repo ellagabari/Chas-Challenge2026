@@ -1,8 +1,8 @@
 import type { Request, Response } from 'express';
 import { db } from '../db/index.js';
-import { users } from '../db/schema.js';
+import { users, reports } from '../db/schema.js';
 import { publicUserColumns } from '../db/userPublicColumns.js';
-import { count, desc, eq } from 'drizzle-orm';
+import { count, desc, eq, gte, and } from 'drizzle-orm';
 
 export const listUsers = async (req: Request, res: Response) => {
   try {
@@ -31,10 +31,51 @@ export const listUsers = async (req: Request, res: Response) => {
 };
 
 export const getMe = async (req: Request, res: Response) => {
-  if (!req.user) {
-    return res.status(401).json({ error: 'Unauthorized' });
+  try {
+    if (!req.user) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const userId = req.user.id;
+
+    const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+    const weeklyReports = await db
+      .select()
+      .from(reports)
+      .where(and(
+        eq(reports.userId, userId),
+        gte(reports.createdAt, oneWeekAgo)
+      ));
+
+    const weeklyPoints = weeklyReports.length * 10;
+
+    const { password: _, ...userWithoutPassword } = user;
+
+    const badges: string[] = [];
+    const reportCount = (user.points ?? 0) / 10;
+
+    if (reportCount >= 1) badges.push('First Report');
+    if (reportCount >= 5) badges.push('5 Cleanups');
+    if (reportCount >= 10) badges.push('10 Cleanups');
+    if (reportCount >= 50) badges.push('50 Cleanups');
+
+    return res.json({
+      ...userWithoutPassword,
+      weeklyPoints,
+      badges,
+    });
+  } catch (error) {
+    console.error('Error fetching me:', error);
+    return res.status(500).json({ error: 'Internal server error' });
   }
-  return res.json(req.user);
 };
 
 export const getUserById = async (req: Request, res: Response) => {

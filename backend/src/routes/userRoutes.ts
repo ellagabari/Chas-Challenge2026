@@ -68,9 +68,26 @@ router.get('/leaderboard', getLeaderboard);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/UserPublic'
+ *               type: object
+ *               properties:
+ *                 username:
+ *                   type: string
+ *                 email:
+ *                   type: string
+ *                 points:
+ *                   type: integer
+ *                 badges:
+ *                   type: array
+ *                   items:
+ *                     type: string
  *       401:
  *         description: Missing or invalid JWT
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorMessage'
+ *       404:
+ *         description: User not found
  *         content:
  *           application/json:
  *             schema:
