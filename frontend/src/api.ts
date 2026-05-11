@@ -95,6 +95,17 @@ export const registerUser = async (
   return data
 }
 
+export const logoutUser = async (): Promise<void> => {
+  const token = localStorage.getItem('token')
+  await fetch(`${API_BASE_URL}/api/auth/logout`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+  })
+}
+
 // ── Reports ──────────────────────────────────────────────────────────────────
 
 export const createReport = async (newReport: CreateReportPayload): Promise<Report> => {
