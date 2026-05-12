@@ -125,6 +125,13 @@ export type AuthUser = {
   createdAt: string
 }
 
+/** Full profile returned by GET /api/users/me */
+export type MeUser = AuthUser & {
+  username: string | null
+  weeklyPoints: number
+  badges: string[]
+}
+
 export type AuthResponse = {
   token: string
   user: AuthUser
