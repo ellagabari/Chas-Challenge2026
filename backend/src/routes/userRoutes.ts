@@ -20,8 +20,6 @@ router.use(authenticate);
  *   get:
  *     tags: [Users]
  *     summary: Get the leaderboard
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: limit
@@ -60,8 +58,6 @@ router.get('/leaderboard', getLeaderboard);
  *   get:
  *     tags: [Users]
  *     summary: Get the authenticated user's profile
- *     security:
- *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Current user (password never included)
@@ -101,8 +97,6 @@ router.get('/me', getMe);
  *   get:
  *     tags: [Users]
  *     summary: List all users (paginated, admin only)
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: page
@@ -152,8 +146,6 @@ router.get('/', requireRole('admin'), listUsers);
  *     tags: [Users]
  *     summary: Get a single user by id
  *     description: Allowed for the same user or an admin.
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
