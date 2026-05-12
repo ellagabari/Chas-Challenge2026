@@ -12,6 +12,7 @@ type AuthContextValue = {
   authState: AuthState
   setUser: (user: AuthUser, token: string) => void
   clearAuth: () => void
+  refreshUser: () => void
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -58,6 +59,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       })
   }
 
+  function refreshUser() {
+    const token = localStorage.getItem('token')
+    if (!token) return
+    fetch(`${API_BASE_URL}/api/users/me`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error('Unauthorized')
+        return res.json() as Promise<MeUser>
+      })
+      .then((user) => {
+        localStorage.setItem('user', JSON.stringify(user))
+        setAuthState({ status: 'authenticated', user })
+      })
+      .catch(() => {
+        localStorage.removeItem('token')
+        localStorage.removeItem('user')
+        setAuthState({ status: 'unauthenticated' })
+      })
+  }
+
   function clearAuth() {
     localStorage.removeItem('token')
     localStorage.removeItem('user')
@@ -65,7 +87,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ authState, setUser, clearAuth }}>
+    <AuthContext.Provider value={{ authState, setUser, clearAuth, refreshUser }}>
       {children}
     </AuthContext.Provider>
   )
