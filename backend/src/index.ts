@@ -7,6 +7,7 @@ import uploadRoutes from './routes/uploadRoutes.js';
 import express from 'express';
 import type { Request, Response } from 'express';
 import cors from 'cors';
+import promBundle from 'express-prom-bundle';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './config/swagger.js';
 
@@ -20,6 +21,10 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(promBundle({
+  includeMethod: true,
+  includePath: true,
+}));
 
 // Routes
 app.use('/api/auth', authRoutes);
