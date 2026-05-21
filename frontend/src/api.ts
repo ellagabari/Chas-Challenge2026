@@ -196,6 +196,30 @@ export const logoutUser = async (): Promise<void> => {
   })
 }
 
+// ── Upload ───────────────────────────────────────────────────────────────────
+
+/**
+ * Uploads an image file to Garage via the backend and returns the public URL.
+ * Requires an authenticated user (JWT token in localStorage).
+ */
+export const uploadReportImage = async (file: File): Promise<string> => {
+  const formData = new FormData();
+  formData.append('image', file);
+
+  const response = await fetch(`${API_BASE_URL}/api/upload`, {
+    method: 'POST',
+    headers: { ...authHeaders() },
+    body: formData,
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error ?? 'Failed to upload image');
+  }
+
+  return (data as { imageUrl: string }).imageUrl;
+};
+
 // ── Reports ──────────────────────────────────────────────────────────────────
 
 export const createReport = async (newReport: CreateReportPayload): Promise<Report> => {

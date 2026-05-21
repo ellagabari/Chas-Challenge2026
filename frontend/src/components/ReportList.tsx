@@ -1,13 +1,7 @@
 
 import { useQuery } from '@tanstack/react-query'
 import { fetchReports } from '../api'
-
-type Report = {
-  id: number;
-  location: string;
-  description: string | null;
-  size: string | null;
-};
+import type { Report } from '../api'
 
 export function ReportList() {
   const { data, isLoading, isError, error } = useQuery<Report[]>({
@@ -37,16 +31,25 @@ export function ReportList() {
         {data?.map((report) => (
           <div
             key={report.id}
-            className="rounded-xl border p-4 shadow-sm transition hover:shadow-md"
+            className="rounded-xl border shadow-sm transition hover:shadow-md overflow-hidden"
             style={{ borderColor: 'var(--color-border)', backgroundColor: 'var(--color-surface)' }}
           >
-              <p className="mt-2 font-semibold" style={{ color: 'var(--color-text-primary)', fontSize: '21px' }}>
+            {report.imageUrl && (
+              <img
+                src={report.imageUrl}
+                alt="Report"
+                className="w-full h-48 object-cover"
+              />
+            )}
+            <div className="p-4">
+              <p className="font-semibold" style={{ color: 'var(--color-text-primary)', fontSize: '21px' }}>
                 {report.description ?? 'No description'}
               </p>
-            <p className="font-medium mt-3" style={{ color: 'var(--color-text-body)' }}>
-              <span style={{ color: 'var(--color-text-muted)' }}>Location:</span> {report.location}
-            </p>
-            <p className="mt-3 text-sm italic" style={{ color: 'var(--color-text-muted)' }}>Size: {report.size ?? 'Unknown'}</p>
+              <p className="font-medium mt-3" style={{ color: 'var(--color-text-body)' }}>
+                <span style={{ color: 'var(--color-text-muted)' }}>Location:</span> {report.location}
+              </p>
+              <p className="mt-3 text-sm italic" style={{ color: 'var(--color-text-muted)' }}>Size: {report.size ?? 'Unknown'}</p>
+            </div>
           </div>
         ))}
       </div>
