@@ -14,6 +14,8 @@ export type Report = {
   id: number;
   userId: number;
   location: string;
+  latitude: number | null;
+  longitude: number | null;
   description: string | null;
   size: string | null;
   imageUrl: string | null;
@@ -25,6 +27,8 @@ export type CreateReportPayload = {
   description: string;
   size: string;
   imageUrl?: string;
+  latitude?: number;
+  longitude?: number;
 };
 
 export type User = {
