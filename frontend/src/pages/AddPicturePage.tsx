@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { CameraCapture } from '../components/CameraCapture'
-import { createReport } from '../api'
+import { createReport, uploadReportImage } from '../api'
 import { useAuth } from '../context/AuthContext'
 import { AuthGateModal } from '../components/AuthGateModal'
 import { useAuthGate } from '../hooks/useAuthGate'
@@ -34,6 +34,7 @@ export function AddPicturePage() {
 
 	const [showCamera, setShowCamera] = useState(false)
 	const [capturedImage, setCapturedImage] = useState<string | null>(null)
+	const [imageFile, setImageFile] = useState<File | null>(null)
 	const [description, setDescription] = useState('')
 	const [category, setCategory] = useState('Mixed')
 	const [showAllCategories, setShowAllCategories] = useState(false)
@@ -81,12 +82,22 @@ export function AddPicturePage() {
 
 	function handleCameraCapture(imageDataUrl: string) {
 		setCapturedImage(imageDataUrl)
+		// Convert the base64 data URL from the camera into a File so it can be uploaded
+		const byteString = atob(imageDataUrl.split(',')[1])
+		const mimeType = imageDataUrl.split(',')[0].split(':')[1].split(';')[0]
+		const byteArray = new Uint8Array(byteString.length)
+		for (let i = 0; i < byteString.length; i++) {
+			byteArray[i] = byteString.charCodeAt(i)
+		}
+		const blob = new Blob([byteArray], { type: mimeType })
+		setImageFile(new File([blob], 'camera-capture.jpg', { type: mimeType }))
 		setShowCamera(false)
 	}
 
 	function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
 		const file = e.target.files?.[0]
 		if (!file) return
+		setImageFile(file)
 		const reader = new FileReader()
 		reader.onload = (ev) => setCapturedImage(ev.target?.result as string)
 		reader.readAsDataURL(file)
@@ -113,10 +124,16 @@ export function AddPicturePage() {
 
 		setIsSubmitting(true)
 		try {
+			let imageUrl: string | undefined
+			if (imageFile) {
+				imageUrl = await uploadReportImage(imageFile)
+			}
+
 			await createReport({
 				location: location.trim(),
 				description: fullDescription,
 				size: size.toLowerCase(),
+				imageUrl,
 				latitude: latitude ?? undefined,
 				longitude: longitude ?? undefined,
 			})
@@ -164,7 +181,7 @@ export function AddPicturePage() {
 								className="w-full rounded-xl object-cover max-h-60"
 							/>
 							<button
-								onClick={() => setCapturedImage(null)}
+								onClick={() => { setCapturedImage(null); setImageFile(null) }}
 								aria-label="Remove photo"
 								className="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/50 flex items-center justify-center"
 							>
