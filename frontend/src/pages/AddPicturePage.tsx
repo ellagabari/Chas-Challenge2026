@@ -449,6 +449,17 @@ export function AddPicturePage() {
 				{submitError && (
 					<p className="mt-2 text-sm text-red-500 text-center">{submitError}</p>
 				)}
+
+				{/* Desktop submit button — mobile uses the floating navbar-notch button below */}
+				<div className="mt-6 hidden md:block">
+					<button
+						onClick={handleSubmit}
+						disabled={isSubmitting}
+						className="btn-primary w-full"
+					>
+						{isSubmitting ? 'Submitting…' : 'Submit report'}
+					</button>
+				</div>
 			</div>
 
 			{/* Hidden file input */}
