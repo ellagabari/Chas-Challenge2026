@@ -8,12 +8,13 @@ import UserProfile from './pages/UserProfile'
 import { LoginPage } from './pages/LoginPage'
 import { AddPicturePage } from './pages/AddPicturePage'
 import { ReportDetailPage } from './pages/ReportDetailPage'
+import { AboutPage } from './pages/AboutPage'
 import PrivateRoute from './components/PrivateRoute'
 import { VerifyEmailPage } from './pages/VerifyEmailPage'
 
 function App() {
   const location = useLocation()
-  const hideNavOn = new Set(['/login', '/verify-email'])
+  const hideNavOn = new Set(['/login', '/verify-email', '/about'])
   return (
     <>
       {!hideNavOn.has(location.pathname) && <NavBar />}
@@ -29,6 +30,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/verify-email" element={<VerifyEmailPage />} />
         <Route path="/leaderboard" element={<LeaderboardPage />} />
+        <Route path="/about" element={<AboutPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>

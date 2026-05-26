@@ -24,8 +24,8 @@ export default function MarkerPopup({
 }: MarkerPopupProps) {
 	return (
 		<Popup>
-			<div className="min-w-44 text-sm text-slate-800">
-				<p className="font-semibold">{title}</p>
+			<div className="min-w-44 text-sm" style={{ color: 'var(--color-text-body)' }}>
+				<p className="font-semibold" style={{ color: 'var(--color-text-primary)' }}>{title}</p>
 				{status && (
 					<span
 						className={`mt-2 inline-block rounded-full px-2 py-1 text-[11px] font-semibold ${getStatusPresentation(status).className}`}
@@ -33,17 +33,28 @@ export default function MarkerPopup({
 						{getStatusPresentation(status).label}
 					</span>
 				)}
-				<p className="mt-1 text-slate-600">
+				<p className="mt-1" style={{ color: 'var(--color-text-body)' }}>
 					{description && description.trim().length > 0 ? description : 'No description'}
 				</p>
-				<p className="mt-2 text-xs text-slate-500">Size: {size ?? 'Unknown'}</p>
-				<p className="mt-1 text-xs text-slate-500">
+				<p className="mt-2 text-xs" style={{ color: 'var(--color-text-muted)' }}>Size: {size ?? 'Unknown'}</p>
+				<p className="mt-1 text-xs" style={{ color: 'var(--color-text-muted)' }}>
 					{lat.toFixed(5)}, {lng.toFixed(5)}
 				</p>
+				{status === 'pending' && (
+					<p className="mt-2 text-xs font-semibold" style={{ color: 'var(--color-text-primary)' }}>
+						🗳 Needs verification — help the community vote
+					</p>
+				)}
+				{status === 'cleanup_pending_vote' && (
+					<p className="mt-2 text-xs font-semibold" style={{ color: 'var(--color-text-primary)' }}>
+						⚠ Cleanup proof needs votes
+					</p>
+				)}
 				{typeof reportId === 'number' && (
 					<Link
 						to={`/reports/${reportId}`}
-						className="mt-3 inline-block text-xs font-semibold text-emerald-700 hover:underline"
+						className="mt-3 inline-block text-xs font-semibold hover:underline"
+						style={{ color: 'var(--color-green-dark)' }}
 					>
 						Open report details
 					</Link>

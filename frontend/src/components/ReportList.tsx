@@ -1,13 +1,25 @@
 
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { fetchReports } from '../api'
 import type { Report } from '../api'
 import { getStatusPresentation, STATUS_FILTER_OPTIONS, type ReportStatusFilter } from '../utils/reportStatus'
 
+import { VOTE_THRESHOLD } from '../constants'
+
+function isValidFilter(value: string | null): value is ReportStatusFilter {
+  return STATUS_FILTER_OPTIONS.some((opt) => opt.value === value)
+}
+
 export function ReportList() {
-  const [statusFilter, setStatusFilter] = useState<ReportStatusFilter>('all')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const rawFilter = searchParams.get('filter')
+  const statusFilter: ReportStatusFilter = isValidFilter(rawFilter) ? rawFilter : 'all'
+
+  function setStatusFilter(next: ReportStatusFilter) {
+    setSearchParams(next === 'all' ? {} : { filter: next }, { replace: true })
+  }
   const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null)
   const [previewImageAlt, setPreviewImageAlt] = useState<string>('Report image')
   const { data, isLoading, isError, error } = useQuery<Report[]>({
@@ -28,7 +40,10 @@ export function ReportList() {
   return (
     <div className="p-1">
       <div className="flex items-center justify-between gap-4">
-        <span className="rounded-full bg-emerald-300 px-3 py-1 text-sm text-white">
+        <span
+          className="rounded-full px-3 py-1 text-sm text-white"
+          style={{ backgroundColor: 'var(--color-green-normal)' }}
+        >
           {visibleReports.length} reports
         </span>
       </div>
@@ -38,11 +53,12 @@ export function ReportList() {
             key={option.value}
             type="button"
             onClick={() => setStatusFilter(option.value)}
-            className={`rounded-full px-3 py-1 text-xs font-semibold transition ${
+            className="rounded-full px-3 py-1 text-xs font-semibold transition"
+            style={
               statusFilter === option.value
-                ? 'bg-emerald-600 text-white'
-                : 'bg-white text-slate-700 border border-slate-200'
-            }`}
+                ? { backgroundColor: 'var(--color-green-dark)', color: '#ffffff' }
+                : { backgroundColor: 'var(--color-surface)', color: 'var(--color-text-body)', border: '1px solid var(--color-border)' }
+            }
           >
             {option.label}
           </button>
@@ -58,7 +74,7 @@ export function ReportList() {
             style={{ borderColor: 'var(--color-border)', backgroundColor: 'var(--color-surface)' }}
           >
             {report.imageUrl && (
-              <div className="w-full bg-slate-100 p-3">
+              <div className="w-full bg-slate-100 dark:bg-neutral-800 p-3">
                 <button
                   type="button"
                   onClick={(event) => {
@@ -79,13 +95,25 @@ export function ReportList() {
               </div>
             )}
             <div className="p-4">
-              <span
-                className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${
-                  getStatusPresentation(report.status).className
-                }`}
-              >
-                {getStatusPresentation(report.status).label}
-              </span>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span
+                  className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${
+                    getStatusPresentation(report.status).className
+                  }`}
+                >
+                  {getStatusPresentation(report.status).label}
+                </span>
+                {report.status === 'cleanup_pending_vote' && report.pendingSubmissionsCount > 0 && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 px-2 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-400">
+                    <span>{report.topPendingVoteCount}/{VOTE_THRESHOLD} cleanup votes</span>
+                  </span>
+                )}
+                {report.status === 'pending' && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 px-2 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-400">
+                    <span>{report.reportVerificationVoteCount}/{VOTE_THRESHOLD} verify votes</span>
+                  </span>
+                )}
+              </div>
               <p className="font-semibold" style={{ color: 'var(--color-text-primary)', fontSize: '21px' }}>
                 {report.description ?? 'No description'}
               </p>
@@ -95,7 +123,7 @@ export function ReportList() {
               <p className="mt-3 text-sm italic" style={{ color: 'var(--color-text-muted)' }}>
                 Size: {report.size ?? 'Unknown'}
               </p>
-              <p className="mt-3 text-sm font-medium text-emerald-700">Open details</p>
+              <p className="mt-3 text-sm font-medium" style={{ color: 'var(--color-green-dark)' }}>Open details</p>
             </div>
           </Link>
         ))}

@@ -22,6 +22,13 @@ const CurrentLocationIcon = L.divIcon({
   iconAnchor: [8, 8],
 });
 
+const PendingVerificationIcon = L.divIcon({
+  className: '',
+  html: '<div style="width:28px;height:28px;border-radius:9999px;background:#f59e0b;border:3px solid #ffffff;box-shadow:0 1px 6px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:13px;line-height:1;">🗳</div>',
+  iconSize: [28, 28],
+  iconAnchor: [14, 14],
+});
+
 export default function ReportMap({
   reports,
   center,
@@ -57,7 +64,11 @@ export default function ReportMap({
             report.latitude !== null && report.longitude !== null
           )
           .map((report) => (
-            <Marker key={report.id} position={[report.latitude, report.longitude]}>
+            <Marker
+              key={report.id}
+              position={[report.latitude, report.longitude]}
+              icon={report.status === 'pending' ? PendingVerificationIcon : DefaultIcon}
+            >
               <MarkerPopup
                 lat={report.latitude}
                 lng={report.longitude}
@@ -82,7 +93,7 @@ export default function ReportMap({
         )}
       </MapContainer>
       {currentLocation && (
-        <div className="pointer-events-none absolute bottom-3 left-3 rounded-lg bg-white/90 px-3 py-2 text-xs text-slate-700 shadow">
+        <div className="pointer-events-none absolute bottom-3 left-3 rounded-lg bg-white/90 dark:bg-neutral-800/90 px-3 py-2 text-xs text-slate-700 dark:text-neutral-200 shadow">
           Your location: {currentLocation[0].toFixed(5)}, {currentLocation[1].toFixed(5)}
         </div>
       )}
