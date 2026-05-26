@@ -266,9 +266,12 @@ export function LoginPage() {
           </div>
 
           {infoMessage && (
-            <p className="text-center text-body-sm" style={{ color: 'var(--color-green-dark)' }}>
-              {infoMessage}
-            </p>
+            <div className="text-center text-body-sm flex flex-col gap-1" style={{ color: 'var(--color-green-dark)' }}>
+              <p>{infoMessage}</p>
+              <p style={{ color: 'var(--color-text-muted)' }}>
+                Can't find it? Check your <strong>spam or junk</strong> folder.
+              </p>
+            </div>
           )}
 
           {apiError && (

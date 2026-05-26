@@ -89,11 +89,65 @@ async function sendVerificationEmail(email:string, verifyLink: string): Promise<
     return;
   }
 
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background-color:#f4f4f4;font-family:Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f4;padding:40px 0;">
+    <tr><td align="center">
+      <table width="100%" style="max-width:520px;background-color:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+        <!-- Header -->
+        <tr>
+          <td align="center" style="background-color:#1a1a1a;padding:32px 40px;">
+            <p style="margin:0;font-size:28px;font-weight:700;letter-spacing:2px;color:#ffffff;">LITTER <span style="color:#4ade80;">Hero</span></p>
+          </td>
+        </tr>
+        <!-- Body -->
+        <tr>
+          <td style="padding:40px;">
+            <h1 style="margin:0 0 16px;font-size:22px;color:#1a1a1a;">Verify your email address</h1>
+            <p style="margin:0 0 24px;font-size:15px;color:#555555;line-height:1.6;">
+              Thanks for signing up! Click the button below to verify your email and activate your account.
+              The link expires in <strong>1 hour</strong>.
+            </p>
+            <table cellpadding="0" cellspacing="0" style="margin:0 0 24px;">
+              <tr>
+                <td align="center" style="background-color:#4ade80;border-radius:8px;">
+                  <a href="${verifyLink}" target="_blank"
+                    style="display:inline-block;padding:14px 32px;font-size:15px;font-weight:600;color:#1a1a1a;text-decoration:none;">
+                    Verify my email
+                  </a>
+                </td>
+              </tr>
+            </table>
+            <p style="margin:0 0 8px;font-size:13px;color:#888888;">If the button doesn't work, copy and paste this link into your browser:</p>
+            <p style="margin:0 0 24px;font-size:12px;word-break:break-all;">
+              <a href="${verifyLink}" style="color:#4ade80;">${verifyLink}</a>
+            </p>
+            <p style="margin:0;font-size:13px;color:#aaaaaa;">
+              If you didn't create an account, you can safely ignore this email.
+            </p>
+          </td>
+        </tr>
+        <!-- Footer -->
+        <tr>
+          <td style="background-color:#f9f9f9;padding:20px 40px;border-top:1px solid #eeeeee;">
+            <p style="margin:0;font-size:12px;color:#aaaaaa;text-align:center;">
+              &copy; ${new Date().getFullYear()} Litter Hero &mdash; Making the world a cleaner place.
+            </p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+
   const { data, error } = await resend.emails.send({
-    from: EMAIL_FROM, 
-    to: email, 
-    subject: 'Verify your account', 
-    html: '<h2>Verify your email</h2><p><a href="'+ verifyLink + '">Verify email</a></p>',
+    from: EMAIL_FROM,
+    to: email,
+    subject: 'Verify your Litter Hero account',
+    html,
   });
 
   if (error) {

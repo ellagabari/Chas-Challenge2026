@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { verifyEmail } from '../api'
+import { verifyEmail, resendVerification } from '../api'
 
 export function VerifyEmailPage() {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
   const [message, setMessage] = useState('Verifying your email...')
+  const [resendStatus, setResendStatus] = useState<'idle' | 'sending' | 'sent'>('idle')
+  const email = searchParams.get('email')
 
   useEffect(() => {
-    const email = searchParams.get('email')
     const token = searchParams.get('token')
 
     if (!email || !token) {
@@ -29,6 +30,16 @@ export function VerifyEmailPage() {
       })
   }, [searchParams])
 
+  async function handleResend() {
+    if (!email) return
+    setResendStatus('sending')
+    try {
+      await resendVerification(email)
+    } finally {
+      setResendStatus('sent')
+    }
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center px-4" style={{ backgroundColor: 'var(--color-page-bg)' }}>
       <div className="card w-full max-w-md text-center">
@@ -42,6 +53,25 @@ export function VerifyEmailPage() {
         >
           {message}
         </p>
+
+        {status === 'error' && email && (
+          <div className="mb-4">
+            {resendStatus === 'sent' ? (
+              <p className="text-body-sm mb-4" style={{ color: 'var(--color-green-dark)' }}>
+                A new verification email has been sent. Check your inbox and spam folder.
+              </p>
+            ) : (
+              <button
+                type="button"
+                className="btn-secondary w-full mb-3"
+                onClick={handleResend}
+                disabled={resendStatus === 'sending'}
+              >
+                {resendStatus === 'sending' ? 'Sending…' : 'Resend verification email'}
+              </button>
+            )}
+          </div>
+        )}
 
         <button
           type="button"
