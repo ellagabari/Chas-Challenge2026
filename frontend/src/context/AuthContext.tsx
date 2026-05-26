@@ -20,6 +20,7 @@ function normalizeMeUser(user: MeUser): MeUser {
     weeklyPoints: typeof user.weeklyPoints === 'number' ? user.weeklyPoints : 0,
     badges: Array.isArray(user.badges) ? user.badges : [],
     activity,
+    profileImageUrl: user.profileImageUrl ?? null,
   }
 }
 

@@ -117,6 +117,7 @@ export type User = {
   email: string;
   points: number;
   role: string;
+  profileImageUrl: string | null;
   createdAt: string;
 };
 
@@ -202,7 +203,7 @@ export const fetchLeaderboard = async (timePeriod: 'allTime' | 'monthly' | 'week
     email: user.email,
     points: user.points,
     rank: index + 1,
-    profilePictureUrl: null,
+    profilePictureUrl: user.profileImageUrl ?? null,
     reportsSubmitted: user.reportsCreated,
     reportsResolved: user.cleanupsApproved,
     verificationVotes: user.verificationVotes,
@@ -224,6 +225,7 @@ export type AuthUser = {
   name: string | null
   role: string | null
   points: number | null
+  profileImageUrl: string | null
   createdAt: string
 }
 
@@ -255,6 +257,13 @@ export type MeUser = AuthUser & {
   cleanupsApproved: number
   reportVerificationVotes: number
   verificationVotes: number
+}
+
+export type UpdateMyProfilePayload = {
+  username?: string
+  currentPassword?: string
+  newPassword?: string
+  profileImageUrl?: string | null
 }
 
 export type AuthResponse = {
@@ -317,6 +326,22 @@ export const googleSignInWithAccessToken = async (accessToken: string): Promise<
     throw new Error(data.error ?? 'Google sign-in failed')
   }
   return data
+}
+
+export const updateMyProfile = async (payload: UpdateMyProfilePayload): Promise<User> => {
+  const response = await fetch(`${API_BASE_URL}/api/users/me`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders(),
+    },
+    body: JSON.stringify(payload),
+  })
+  const data = await response.json()
+  if (!response.ok) {
+    throw new Error(data.error ?? 'Failed to update profile')
+  }
+  return data as User
 }
 
 export const logoutUser = async (): Promise<void> => {

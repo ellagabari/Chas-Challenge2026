@@ -1,8 +1,10 @@
-//Det här en komponent för att visa användarens profilheader
+import { useState } from 'react'
+
 interface ProfileHeaderProps {
   username: string | null
   level: number
   createdAt?: string
+  profileImageUrl?: string | null
 }
 
 const getInitial = (username: string) => username.charAt(0).toUpperCase()
@@ -26,20 +28,31 @@ const formatMemberSince = (dateStr?: string) => {
   return `Member since ${date.toLocaleString('en-US', { month: 'short', year: 'numeric' })}`
 }
 
-const ProfileHeader = ({ username, level, createdAt }: ProfileHeaderProps) => {
+const ProfileHeader = ({ username, level, createdAt, profileImageUrl }: ProfileHeaderProps) => {
   const displayName = username ?? 'User'
   const initial = getInitial(displayName)
   const avatarColor = getAvatarColor(displayName)
+  const [imgError, setImgError] = useState(false)
+  const showImage = profileImageUrl && !imgError
 
   return (
     <div className="flex flex-col items-center pt-8 pb-4">
       {/* Avatar */}
-      <div
-        className="w-20 h-20 rounded-full flex items-center justify-center text-white text-3xl font-bold mb-3"
-        style={{ backgroundColor: avatarColor }}
-      >
-        {initial}
-      </div>
+      {showImage ? (
+        <img
+          src={profileImageUrl}
+          alt={displayName}
+          className="w-20 h-20 rounded-full object-cover mb-3"
+          onError={() => setImgError(true)}
+        />
+      ) : (
+        <div
+          className="w-20 h-20 rounded-full flex items-center justify-center text-white text-3xl font-bold mb-3"
+          style={{ backgroundColor: avatarColor }}
+        >
+          {initial}
+        </div>
+      )}
 
       {/* Namn */}
       <span className="font-semibold text-body-xl" style={{ color: 'var(--color-text-primary)' }}>

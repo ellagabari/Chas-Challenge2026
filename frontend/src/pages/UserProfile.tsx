@@ -44,7 +44,7 @@ const UserProfile = () => {
 
   return (
     <PageShell>
-      <ProfileHeader username={user?.username} level={12} createdAt={user?.createdAt} />
+      <ProfileHeader username={user?.username} level={12} createdAt={user?.createdAt} profileImageUrl={user?.profileImageUrl} />
       <PointsCard
         totalPoints={display.points}
         weeklyPoints={display.weeklyPoints}
