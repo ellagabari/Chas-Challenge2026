@@ -1,21 +1,29 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { verifyEmail, resendVerification } from '../api'
+
+type ErrorCode = 'EXPIRED' | 'INVALID_LINK' | 'UNKNOWN'
 
 export function VerifyEmailPage() {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
   const [message, setMessage] = useState('Verifying your email...')
+  const [errorCode, setErrorCode] = useState<ErrorCode | null>(null)
   const [resendStatus, setResendStatus] = useState<'idle' | 'sending' | 'sent'>('idle')
   const email = searchParams.get('email')
+  const hasVerified = useRef(false)
 
   useEffect(() => {
+    if (hasVerified.current) return
+    hasVerified.current = true
+
     const token = searchParams.get('token')
 
     if (!email || !token) {
       setStatus('error')
-      setMessage('Verification link is invalid or incomplete.')
+      setErrorCode('INVALID_LINK')
+      setMessage('The verification link is missing required information.')
       return
     }
 
@@ -25,8 +33,12 @@ export function VerifyEmailPage() {
         setMessage(result.message || 'Email verified successfully. You can now log in.')
       })
       .catch((err) => {
+        const msg = err instanceof Error ? err.message : 'Email verification failed'
         setStatus('error')
-        setMessage(err instanceof Error ? err.message : 'Email verification failed')
+        setMessage(msg)
+        if (msg.toLowerCase().includes('expired')) setErrorCode('EXPIRED')
+        else if (msg.toLowerCase().includes('invalid')) setErrorCode('INVALID_LINK')
+        else setErrorCode('UNKNOWN')
       })
   }, [searchParams])
 
@@ -40,47 +52,54 @@ export function VerifyEmailPage() {
     }
   }
 
+  const showResend = status === 'error' && email && (errorCode === 'EXPIRED' || errorCode === 'INVALID_LINK')
+
   return (
     <div className="min-h-screen flex items-center justify-center px-4" style={{ backgroundColor: 'var(--color-page-bg)' }}>
-      <div className="card w-full max-w-md text-center">
-        <h1 className="text-xl font-semibold mb-3" style={{ color: 'var(--color-text-primary)' }}>
+      <div className="card w-full max-w-md text-center flex flex-col gap-4">
+        <h1 className="text-xl font-semibold" style={{ color: 'var(--color-text-primary)' }}>
           Email Verification
         </h1>
 
-        <p
-          className="text-body-sm mb-6"
-          style={{ color: status === 'error' ? '#b42318' : 'var(--color-text-muted)' }}
-        >
-          {message}
-        </p>
-
-        {status === 'error' && email && (
-          <div className="mb-4">
-            {resendStatus === 'sent' ? (
-              <p className="text-body-sm mb-4" style={{ color: 'var(--color-green-dark)' }}>
-                A new verification email has been sent. Check your inbox and spam folder.
-              </p>
-            ) : (
-              <button
-                type="button"
-                className="btn-secondary w-full mb-3"
-                onClick={handleResend}
-                disabled={resendStatus === 'sending'}
-              >
-                {resendStatus === 'sending' ? 'Sending…' : 'Resend verification email'}
-              </button>
-            )}
-          </div>
+        {status === 'loading' && (
+          <p className="text-body-sm" style={{ color: 'var(--color-text-muted)' }}>{message}</p>
         )}
 
-        <button
-          type="button"
-          className="btn-primary w-full"
-          onClick={() => navigate('/login')}
-          disabled={status === 'loading'}
-        >
-          Go to Login
-        </button>
+        {status === 'success' && (
+          <>
+            <p className="text-body-sm" style={{ color: 'var(--color-green-dark)' }}>{message}</p>
+            <button type="button" className="btn-primary w-full" onClick={() => navigate('/login')}>
+              Go to Login
+            </button>
+          </>
+        )}
+
+        {status === 'error' && (
+          <>
+            <p className="text-body-sm" style={{ color: '#b42318' }}>{message}</p>
+
+            {showResend && (
+              resendStatus === 'sent' ? (
+                <p className="text-body-sm" style={{ color: 'var(--color-green-dark)' }}>
+                  A new link has been sent. Check your inbox and spam folder.
+                </p>
+              ) : (
+                <button
+                  type="button"
+                  className="btn-secondary w-full"
+                  onClick={handleResend}
+                  disabled={resendStatus === 'sending'}
+                >
+                  {resendStatus === 'sending' ? 'Sending…' : 'Resend verification email'}
+                </button>
+              )
+            )}
+
+            <button type="button" className="btn-primary w-full" onClick={() => navigate('/login')}>
+              Go to Login
+            </button>
+          </>
+        )}
       </div>
     </div>
   )

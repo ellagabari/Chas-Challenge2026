@@ -255,29 +255,42 @@ export const verifyEmail= async(req:Request, res:Response) =>{
   const parsed = verifyEmailSchema.safeParse(req.body);
   if(!parsed.success){
     return res.status(400).json({error : parsed.error.issues[0]?.message ?? 'invalid input'});
-
   }
   try{
     const { email, token } = parsed.data;
     const [foundUser] = await db.select().from(users).where(eq(users.email, email)).limit(1);
 
-    if(!foundUser || !foundUser.emailVerificationToken ||!foundUser.emailVerificationTokenExpiresAt){
-      return res.status(400).json({error: 'Invalid or expired verification link'})
+    if(!foundUser){
+      return res.status(400).json({ error: 'Invalid verification link', code: 'INVALID_LINK' });
     }
 
-    const providedHash = hashVerificationToken(token); 
-    const tokenMatches =providedHash === foundUser.emailVerificationToken;
-    const notExpired = foundUser.emailVerificationTokenExpiresAt.getTime() > Date.now(); 
-
-    if(!tokenMatches || !notExpired){
-      return res.status(400).json({error: 'Invalid or expired verification link'})
+    if(foundUser.emailVerifiedAt){
+      return res.status(200).json({ message: 'Your email is already verified. You can log in.', code: 'ALREADY_VERIFIED' });
     }
+
+    if(!foundUser.emailVerificationToken || !foundUser.emailVerificationTokenExpiresAt){
+      return res.status(400).json({ error: 'Verification link is invalid or has already been used.', code: 'INVALID_LINK' });
+    }
+
+    const providedHash = hashVerificationToken(token);
+    const tokenMatches = providedHash === foundUser.emailVerificationToken;
+    const notExpired = foundUser.emailVerificationTokenExpiresAt.getTime() > Date.now();
+
+    if(!tokenMatches){
+      return res.status(400).json({ error: 'Verification link is invalid.', code: 'INVALID_LINK' });
+    }
+
+    if(!notExpired){
+      return res.status(400).json({ error: 'Verification link has expired. Please request a new one.', code: 'EXPIRED' });
+    }
+
     await db.update(users).set({
       emailVerifiedAt: new Date(),
       emailVerificationToken: null,
       emailVerificationTokenExpiresAt: null,
     }).where(eq(users.id, foundUser.id))
-    return res.status(200).json({message: 'Email verified successfully. You can now log in.'})
+
+    return res.status(200).json({ message: 'Email verified successfully. You can now log in.', code: 'VERIFIED' });
   }
   catch(error){
     console.error('Error verifying email:', error)
