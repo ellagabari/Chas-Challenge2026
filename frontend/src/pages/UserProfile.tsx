@@ -88,7 +88,7 @@ const UserProfile = () => {
         }))
       ]} />
       <div className="mx-4 mt-6 mb-8 flex flex-col gap-3">
-        <SettingsButton onClick={() => console.log('Settings clicked')} />
+        <SettingsButton onClick={() => navigate('/profile/settings')} />
         <Button
           variant="secondary"
           fullWidth

@@ -71,9 +71,11 @@ flowchart LR
 
 ---
 
-## Phase 1 — Routing and Page Shell (Frontend)
+## Phase 1 — Routing and Page Shell (Frontend) ✅
 
 **Deliverable:** Navigable settings page with layout; forms can be stubbed.
+
+**Status:** Done — route `/profile/settings`, `AccountSettingsPage.tsx`, profile button wired.
 
 ### Tasks
 
