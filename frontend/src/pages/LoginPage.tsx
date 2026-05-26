@@ -20,6 +20,7 @@ export function LoginPage() {
   const startInRegister = (location.state as { register?: boolean } | null)?.register === true
   const { setUser } = useAuth()
   const [apiError, setApiError] = useState<string | null>(null)
+  const [infoMessage, setInfoMessage] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const googleWrapperRef = useRef<HTMLDivElement>(null)
   const [googleBtnWidth, setGoogleBtnWidth] = useState(320)
@@ -44,12 +45,24 @@ export function LoginPage() {
     },
     onSubmit: async ({ value }) => {
       setApiError(null)
+      setInfoMessage(null)
       setIsLoading(true)
       try {
-        const result = value.isRegistering
-          ? await registerUser(value.email, value.password, value.username || undefined, value.name || undefined)
-          : await loginUser(value.email, value.password)
+        if (value.isRegistering) {
+          const result = await registerUser(
+            value.email,
+            value.password,
+            value.username || undefined,
+            value.name || undefined
+          )
 
+          setInfoMessage(result.message || 'Account created. Please verify your email before logging in.')
+          form.setFieldValue('isRegistering', false)
+          form.setFieldValue('password', '')
+          return
+        }
+
+        const result = await loginUser(value.email, value.password)
         setUser(result.user, result.token)
         navigate('/')
       } catch (err) {
@@ -242,6 +255,12 @@ export function LoginPage() {
               </form.Subscribe>
             </div>
           </div>
+
+          {infoMessage && (
+            <p className="text-center text-body-sm" style={{ color: 'var(--color-green-dark)' }}>
+              {infoMessage}
+            </p>
+          )}
 
           {apiError && (
             <p className="field-error text-center">{apiError}</p>
