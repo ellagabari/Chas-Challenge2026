@@ -21,6 +21,7 @@ function normalizeMeUser(user: MeUser): MeUser {
     badges: Array.isArray(user.badges) ? user.badges : [],
     activity,
     profileImageUrl: user.profileImageUrl ?? null,
+    hasPassword: typeof user.hasPassword === 'boolean' ? user.hasPassword : true,
   }
 }
 

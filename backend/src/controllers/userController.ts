@@ -122,7 +122,8 @@ export const getMe = async (req: Request, res: Response) => {
       weeklyApprovedCleanupSizes: weeklyApprovedCleanups.map((cleanup) => cleanup.size),
     });
 
-    const { password: _, ...userWithoutPassword } = user;
+    const { password: rawPassword, ...userWithoutPassword } = user;
+    const hasPassword = rawPassword !== null;
 
     const badges: string[] = [];
     const reportCount = reportsCreatedCount?.count ?? 0;
@@ -147,6 +148,7 @@ export const getMe = async (req: Request, res: Response) => {
 
     return res.json({
       ...userWithoutPassword,
+      hasPassword,
       weeklyPoints,
       badges,
       currentStreak,

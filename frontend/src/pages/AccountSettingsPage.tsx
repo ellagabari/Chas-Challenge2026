@@ -34,7 +34,7 @@ export function AccountSettingsPage() {
   if (!user) return null
 
   const displayUsername = user.username ?? `User${user.id}`
-  const hasPassword = true // server allows set-password for Google users too
+  const hasPassword = user.hasPassword
 
   // ── Handlers ────────────────────────────────────────────────────────────────
 

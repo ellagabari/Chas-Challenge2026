@@ -248,6 +248,7 @@ export const emptyActivityHeatmap = (): ActivityHeatmapData => ({
 /** Full profile returned by GET /api/users/me */
 export type MeUser = AuthUser & {
   username: string | null
+  hasPassword: boolean
   weeklyPoints: number
   badges: string[]
   currentStreak: number
