@@ -91,12 +91,13 @@ export function AccountSettingsPage() {
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
+    const previousUrl = previewUrl
     const localUrl = URL.createObjectURL(file)
     setPreviewUrl(localUrl)
-    handleUploadPhoto(file)
+    handleUploadPhoto(file, previousUrl)
   }
 
-  async function handleUploadPhoto(file: File) {
+  async function handleUploadPhoto(file: File, previousUrl: string | null) {
     setPhotoError(null)
     setPhotoSuccess(false)
     setPhotoLoading(true)
@@ -107,7 +108,7 @@ export function AccountSettingsPage() {
       setPhotoSuccess(true)
     } catch (err) {
       setPhotoError(err instanceof Error ? err.message : 'Failed to upload photo')
-      setPreviewUrl(user.profileImageUrl ?? null)
+      setPreviewUrl(previousUrl)
     } finally {
       setPhotoLoading(false)
     }
