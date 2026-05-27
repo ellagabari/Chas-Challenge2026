@@ -39,7 +39,7 @@ const ProfileHeader = ({ username, createdAt, profileImageUrl }: ProfileHeaderPr
       {/* Avatar */}
       {showImage ? (
         <img
-          src={profileImageUrl}
+          src={profileImageUrl ?? undefined}
           alt={displayName}
           className="w-20 h-20 rounded-full object-cover mb-3"
           onError={() => setImgError(true)}
