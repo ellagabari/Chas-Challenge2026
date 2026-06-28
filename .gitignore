@@ -1,3 +1,6 @@
+#python
+__pycache__
+
 # Node.gitignore
 
 # Logs
@@ -151,3 +154,7 @@ Thumbs.db
 Desktop.ini
 backend/dist/
 frontend/dist/
+
+.vscode/
+.vscode
+pub-cert.pem
